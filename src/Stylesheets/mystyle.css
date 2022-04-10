@@ -1,0 +1,58 @@
+body {
+    margin: auto;
+}
+
+
+.nav-design {
+    background-color: #b54242;
+
+}
+
+
+
+.card {
+    box-shadow: 5px 10px 8px #ba9e9e;
+
+
+}
+
+input,
+select {
+    box-shadow: 1px 1px 6px #ba9e9e;
+}
+
+
+
+.loading {
+    position: fixed;
+    z-index: 999;
+    height: 2em;
+    width: 2em;
+    overflow: visible;
+    margin: auto;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+  }
+
+.login {
+    width: 40%;
+}
+
+@media screen and (max-width:1000px) {
+
+    .login {
+
+        width: 60%
+    }
+}
+
+@media screen and (max-width:570px) {
+
+    .login {
+
+        width: 90%
+    }
+}
+
