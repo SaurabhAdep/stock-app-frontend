@@ -1,7 +1,6 @@
 import axios from 'axios';
 import React, { Component } from 'react'
 import DatePicker from "react-datepicker";
-
 import "react-datepicker/dist/react-datepicker.css";
 
 export class PerformanceComponent extends Component {
@@ -25,12 +24,11 @@ export class PerformanceComponent extends Component {
     try
     {
       const response = await axios.get("http://localhost:8081/stocks")
-      // let clist = response.data.map((stock)=>[stock.company.companyId,stock.company.companyName])
-      // let t;
-      // clist=clist.filter(( t={}, a=> !(t[a]=a in t) ));
-      console.log(response.data)
+      let clist = response.data.map((stock)=>[stock.companyId,stock.companyName])
+      let t;
+      clist = clist.filter(( t={}, a=> !(t[a]=a in t) ));
       this.setState({
-        companyList:response.data
+        companyList: clist
       },()=>console.log(this.state.companyList))
     }
     catch(err) {
@@ -40,18 +38,20 @@ export class PerformanceComponent extends Component {
 
   async fetchData()
   {
-    if(this.state.from===null || this.state.to===null ||this.state.company1==="" || this.state.company2==="")
-      return;
+    if(this.state.from===null || this.state.to===null || this.state.company1==="" || this.state.company2==="")
+      return alert("Fill all the fields...");
     else if(this.state.company1 === this.state.company2 )
-      return
+      return alert("Both companies are same, Choose different companies...");
 
-    console.log(this.state.from)
     try
     {
       const from = `${this.state.from.getFullYear()}-${`${this.state.from.getMonth()+1}`.padStart(2,0)}-${`${this.state.from.getDate()}`.padStart(2,0)}`;
       const to = `${this.state.to.getFullYear()}-${`${this.state.to.getMonth()+1}`.padStart(2,0)}-${`${this.state.to.getDate()}`.padStart(2,0)}`
       console.log([from,to])
-      const response = await axios.get(`http://localhost:8081/stocks/compare-performance?companyCode1=${this.state.company1}&companyCode2=${this.state.company2}&from=${from}&to=${to}`) 
+      
+      const response = await axios.get(`http://localhost:8081/stocks/compare-performance/${this.state.company1}/${this.state.company2}/${from}/${to}`) 
+  
+      
       const tempData = response.data
       let data = [];
     
@@ -75,8 +75,10 @@ export class PerformanceComponent extends Component {
     })   
   }
 
+ 
   table = () => 
   {
+    
     if(this.state.data.length != 0 )
     {
       return this.state.data.map((data)=>{
@@ -91,14 +93,14 @@ export class PerformanceComponent extends Component {
             </thead>
             <tbody>
               <tr>
-                <th scope="row">{data[0].date}</th>
-                <td>{data[0].company.companyName}</td>
-                <td>{data[0].stockPrice}</td>
+                <th scope="row">{data[0].priceOnDate}</th>
+                <td>{data[0].companyName}</td>
+                <td>{data[0].marketPrice}</td>
               </tr>
               <tr>
                   <td></td>
-                  <td>{data[1].company.companyName}</td>
-                <td>{data[1].stockPrice}</td>
+                  <td>{data[1].companyName}</td>
+                <td>{data[1].marketPrice}</td>
               </tr>
             </tbody>
           </table>
@@ -106,7 +108,11 @@ export class PerformanceComponent extends Component {
       }
     );
   }
+  else {
+    return alert("No data found for mentioned fields!!!");
+  }
 }
+
     
   render() {
     return (
